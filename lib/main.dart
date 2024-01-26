@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:newsnest/Models/news.model.dart';
 import 'package:newsnest/backend/api/newsapi.dart';
+import 'package:newsnest/constants/colors.dart';
+import 'package:newsnest/screens/bookmark_screen.dart';
+import 'package:newsnest/screens/explore_screen.dart';
+import 'package:newsnest/screens/home_screen.dart';
+import 'package:newsnest/screens/profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.yellow, brightness: Brightness.dark),
+            seedColor: Colors.purple, brightness: Brightness.dark),
         useMaterial3: true,
       ),
       // colorScheme:
@@ -35,11 +42,36 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<NewsModel> allNewsList = [];
+  List<Widget> screens = [];
+  int _selectedIndex = 0;
+  late ScrollController _hideButtonController;
+  bool _isVisible = true;
 
   @override
   void initState() {
     super.initState();
     fetchNews();
+
+    _isVisible = true;
+    _hideButtonController = ScrollController();
+    _hideButtonController.addListener(() {
+      if (_hideButtonController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        if (_isVisible) {
+          setState(() {
+            _isVisible = false;
+          });
+        }
+      }
+      if (_hideButtonController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        if (!_isVisible) {
+          setState(() {
+            _isVisible = true;
+          });
+        }
+      }
+    });
   }
 
   void fetchNews() async {
@@ -47,32 +79,106 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       allNewsList = newsList;
     });
+    screens = [
+      HomeScreen(newsList: newsList, _hideButtonController),
+      const ExploreScreen(),
+      const BookmarkScreen(),
+      const ProfileScreen()
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    print("build is called");
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Home"),
-          centerTitle: true,
-        ),
-        body: Column(
-          children: [
-            const Text("data"),
-            Expanded(
-                child: ListView.builder(
-              itemCount: allNewsList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text(allNewsList[index].content),
-                );
-              },
-            )),
-          ],
-        ),
-      ),
+          backgroundColor: BgColorPicker.primary,
+          // body: Container(
+          //   decoration: BoxDecoration(
+          //       // color: Colors.black87,
+          //       border: Border.all(width: 10, color: Colors.purple)),
+          //   child: screens[_selectedIndex],
+          // ),
+          // body: SingleChildScrollView(
+          //   scrollDirection: Axis.vertical,
+          //   controller: _hideButtonController,
+          //   child: ConstrainedBox(
+          //       constraints: BoxConstraints(
+          //         minHeight: viewportConstraints.maxHeight,
+          //       ),
+          //       child: screens[_selectedIndex]),
+          // ),
+          // body: Center(
+          //     child: SingleChildScrollView(
+          //         physics: const ScrollPhysics(),
+          //         controller: _hideButtonController,
+          //         child: screens[_selectedIndex])),
+          body: Center(child: screens[_selectedIndex]),
+          bottomNavigationBar: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            height: _isVisible ? 80.0 : 0.0,
+            child: _isVisible
+                ? Container(
+                    height: 80,
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20)),
+                        color: BgColorPicker.secondary.withOpacity(0.9),
+                        border: Border(
+                            top: BorderSide(
+                          width: 1,
+                          color: Colors.grey.withAlpha(10),
+                        ))),
+                    padding: const EdgeInsets.all(16),
+                    child: GNav(
+                      tabBorderRadius: 17,
+                      // backgroundColor: Colors.red,
+                      textStyle: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: BgColorPicker.secondary,
+                          fontSize: 16),
+                      gap: 3,
+                      haptic: true,
+                      duration: const Duration(milliseconds: 500),
+                      color: IconColorPicker.primary,
+                      activeColor: IconColorPicker.secondary,
+                      tabBackgroundColor: BgColorPicker.selectedNav,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 13, horizontal: 19),
+                      iconSize: 24,
+                      tabMargin: const EdgeInsets.all(0),
+                      tabs: [
+                        GButton(
+                          icon: _selectedIndex == 0
+                              ? Icons.home
+                              : Icons.home_outlined,
+                          text: "Home",
+                        ),
+                        GButton(
+                          icon: _selectedIndex == 1
+                              ? Icons.explore
+                              : Icons.explore_outlined,
+                          text: "Explore",
+                        ),
+                        GButton(
+                          icon: _selectedIndex == 2
+                              ? Icons.bookmark_add_rounded
+                              : Icons.bookmark_add_outlined,
+                          text: "Bookmarks",
+                        ),
+                        GButton(
+                          icon: _selectedIndex == 3
+                              ? Icons.person_2
+                              : Icons.person_2_outlined,
+                          text: "Profile",
+                        )
+                      ],
+                      selectedIndex: _selectedIndex,
+                      onTabChange: (value) =>
+                          {setState(() => _selectedIndex = value)},
+                    ))
+                : Container(),
+          )),
     );
   }
 }
