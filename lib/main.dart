@@ -25,9 +25,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.purple, brightness: Brightness.dark),
         useMaterial3: true,
+        // colorScheme:
+        // ColorScheme.fromSwatch().copyWith(brightness: Brightness.dark),
+        //
       ),
-      // colorScheme:
-      // ColorScheme.fromSwatch().copyWith(brightness: Brightness.dark)),
       home: const HomePage(),
     );
   }
@@ -41,14 +42,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<NewsModel> allNewsList = [];
+  late List<NewsModel> allNewsList;
   List<Widget> screens = [];
   int _selectedIndex = 0;
   late ScrollController _hideButtonController;
   bool _isVisible = true;
-
   @override
   void initState() {
+    print("home init state is called");
     super.initState();
     fetchNews();
 
@@ -75,13 +76,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void fetchNews() async {
-    final newsList = await NewsApi.fetchNewsList();
+    print("home fetch news is called");
+    final newsList = await NewsApi.fetchTopHeadlines();
     setState(() {
       allNewsList = newsList;
     });
     screens = [
       HomeScreen(newsList: newsList, _hideButtonController),
-      const ExploreScreen(),
+      ExploreScreen(newsList: newsList, _hideButtonController),
       const BookmarkScreen(),
       const ProfileScreen()
     ];

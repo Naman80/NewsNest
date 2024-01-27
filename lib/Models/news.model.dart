@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class NewsModel {
   Source source;
   String author;
@@ -5,9 +7,8 @@ class NewsModel {
   String description;
   String url;
   String urlToImage;
-  DateTime publishedAt;
+  String publishedAt;
   String content;
-
   NewsModel({
     required this.source,
     required this.author,
@@ -28,7 +29,9 @@ class NewsModel {
       description: json['description'] ?? '',
       url: json['url'] ?? '',
       urlToImage: json['urlToImage'] ?? '',
-      publishedAt: DateTime.parse(json['publishedAt']),
+      publishedAt: DateFormat.yMMMd()
+          .format(DateTime.parse(json['publishedAt']))
+          .toString(),
       content: json['content'] ?? '',
     );
   }
