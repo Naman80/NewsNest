@@ -1,5 +1,11 @@
+import 'dart:math';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:newsnest/Models/news.model.dart';
+import 'package:newsnest/Utils/tap_functions.dart';
+import 'package:newsnest/Widgets/bottom_sheet.dart';
+import 'package:newsnest/Widgets/category_bar.dart';
 import 'package:newsnest/Widgets/custom_appbar.dart';
 import 'package:newsnest/Widgets/news_tile.dart';
 import 'package:newsnest/backend/api/newsapi.dart';
@@ -49,41 +55,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           headingText: "Explore",
           showtrailingIcon: true,
         ),
-        Container(
-            height: 40,
-            margin: const EdgeInsets.all(10),
-            // decoration: const BoxDecoration(color: Colors.pink),
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: categoryList.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    fetchNews(categoryList[index]);
-                  },
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-                    decoration: BoxDecoration(
-                        color: BgColorPicker.secondary,
-                        border: Border.all(
-                            width: 1, color: BgColorPicker.secondary),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Text(
-                      categoryList[index],
-                      style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: TextColorPicker.primary),
-                    ),
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) => const SizedBox(
-                width: 10,
-              ),
-            )),
+        CategoryBar(categoryList: categoryList, fetchCategoryNews: fetchNews),
         widget.newsList.isNotEmpty
             ? Expanded(
                 child: ListView.builder(
@@ -92,7 +64,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   scrollDirection: Axis.vertical,
                   itemCount: widget.newsList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return NewsTile(singleNews: widget.newsList[index]);
+                    return GestureDetector(
+                        onTap: () => TapFunctions.onNewsTileTap(
+                            widget.newsList[index], context),
+                        child: NewsTile(singleNews: widget.newsList[index]));
                   },
                 ),
               )

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:newsnest/Models/news.model.dart';
+import 'package:newsnest/Utils/tap_functions.dart';
 import 'package:newsnest/Widgets/custom_appbar.dart';
 import 'package:newsnest/Widgets/news_tile.dart';
 
@@ -15,17 +16,22 @@ class HomeScreen extends StatelessWidget {
           headingText: "Top Headlines",
           showtrailingIcon: false,
         ),
-        Expanded(
-          child: ListView.builder(
-            shrinkWrap: true,
-            controller: scrollController,
-            scrollDirection: Axis.vertical,
-            itemCount: newsList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return NewsTile(singleNews: newsList[index]);
-            },
-          ),
-        ),
+        newsList.isNotEmpty
+            ? Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  controller: scrollController,
+                  scrollDirection: Axis.vertical,
+                  itemCount: newsList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                        onTap: () => TapFunctions.onNewsTileTap(
+                            newsList[index], context),
+                        child: NewsTile(singleNews: newsList[index]));
+                  },
+                ),
+              )
+            : const Expanded(child: Center(child: CircularProgressIndicator())),
       ],
     );
   }

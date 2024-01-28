@@ -42,7 +42,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<NewsModel> allNewsList;
   List<Widget> screens = [];
   int _selectedIndex = 0;
   late ScrollController _hideButtonController;
@@ -52,7 +51,6 @@ class _HomePageState extends State<HomePage> {
     print("home init state is called");
     super.initState();
     fetchNews();
-
     _isVisible = true;
     _hideButtonController = ScrollController();
     _hideButtonController.addListener(() {
@@ -60,7 +58,7 @@ class _HomePageState extends State<HomePage> {
           ScrollDirection.reverse) {
         if (_isVisible) {
           setState(() {
-            _isVisible = false;
+            _isVisible = true;
           });
         }
       }
@@ -78,9 +76,7 @@ class _HomePageState extends State<HomePage> {
   void fetchNews() async {
     print("home fetch news is called");
     final newsList = await NewsApi.fetchTopHeadlines();
-    setState(() {
-      allNewsList = newsList;
-    });
+    setState(() {});
     screens = [
       HomeScreen(newsList: newsList, _hideButtonController),
       ExploreScreen(newsList: newsList, _hideButtonController),
@@ -94,26 +90,6 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
           backgroundColor: BgColorPicker.primary,
-          // body: Container(
-          //   decoration: BoxDecoration(
-          //       // color: Colors.black87,
-          //       border: Border.all(width: 10, color: Colors.purple)),
-          //   child: screens[_selectedIndex],
-          // ),
-          // body: SingleChildScrollView(
-          //   scrollDirection: Axis.vertical,
-          //   controller: _hideButtonController,
-          //   child: ConstrainedBox(
-          //       constraints: BoxConstraints(
-          //         minHeight: viewportConstraints.maxHeight,
-          //       ),
-          //       child: screens[_selectedIndex]),
-          // ),
-          // body: Center(
-          //     child: SingleChildScrollView(
-          //         physics: const ScrollPhysics(),
-          //         controller: _hideButtonController,
-          //         child: screens[_selectedIndex])),
           body: Center(child: screens[_selectedIndex]),
           bottomNavigationBar: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
