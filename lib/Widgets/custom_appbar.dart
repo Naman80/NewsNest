@@ -134,9 +134,13 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     print("serach suggestions build is called");
+
     return ListView.separated(
         itemBuilder: (context, index) {
-          return NewsTile(singleNews: newsList[index]);
+          return GestureDetector(
+            onTap: () => TapFunctions.onNewsTileTap(newsList[index], context),
+            child: NewsTile(singleNews: newsList[index]),
+          );
         },
         separatorBuilder: (context, index) => const SizedBox(
               height: 5,
