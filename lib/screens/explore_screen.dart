@@ -1,15 +1,10 @@
-import 'dart:math';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:newsnest/Models/news.model.dart';
 import 'package:newsnest/Utils/tap_functions.dart';
-import 'package:newsnest/Widgets/bottom_sheet.dart';
 import 'package:newsnest/Widgets/category_bar.dart';
 import 'package:newsnest/Widgets/custom_appbar.dart';
 import 'package:newsnest/Widgets/news_tile.dart';
 import 'package:newsnest/backend/api/newsapi.dart';
-import 'package:newsnest/constants/colors.dart';
 
 class ExploreScreen extends StatefulWidget {
   List<NewsModel> newsList;

@@ -25,15 +25,16 @@ class NewsTile extends StatelessWidget {
           child: CachedNetworkImage(
               fit: BoxFit.cover,
               imageUrl: singleNews.urlToImage,
-              placeholder: (context, url) =>
-                  const Center(child: CircularProgressIndicator()),
+              placeholder: (context, url) => Container(
+                    decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 106, 102, 102),
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
               errorWidget: (context, url, error) => Container(
-                    clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 106, 102, 102),
                         borderRadius: BorderRadius.circular(10)),
                     height: 100,
-                    width: 100,
                     child: const Icon(Icons.error),
                   )),
         ),

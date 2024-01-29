@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:newsnest/Models/news.model.dart';
 import 'package:newsnest/backend/api/newsapi.dart';
 import 'package:newsnest/constants/colors.dart';
 import 'package:newsnest/screens/bookmark_screen.dart';
