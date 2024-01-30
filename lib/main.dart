@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:newsnest/backend/api/newsapi.dart';
+import 'package:newsnest/Utils/providers/newslist_provider.dart';
 import 'package:newsnest/constants/colors.dart';
 import 'package:newsnest/screens/bookmark_screen.dart';
 import 'package:newsnest/screens/explore_screen.dart';
 import 'package:newsnest/screens/home_screen.dart';
 import 'package:newsnest/screens/profile_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => NewsListProvider()),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -41,15 +44,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Widget> screens = [];
   int _selectedIndex = 0;
   late ScrollController _hideButtonController;
   bool _isVisible = true;
+  List<Widget> screens = [];
+
   @override
   void initState() {
     print("home init state is called");
-    super.initState();
-    fetchNews();
+    context.read<NewsListProvider>().init();
     _isVisible = true;
     _hideButtonController = ScrollController();
     _hideButtonController.addListener(() {
@@ -70,15 +73,10 @@ class _HomePageState extends State<HomePage> {
         }
       }
     });
-  }
-
-  void fetchNews() async {
-    print("home fetch news is called");
-    final newsList = await NewsApi.fetchTopHeadlines();
-    setState(() {});
+    super.initState();
     screens = [
-      HomeScreen(newsList: newsList, _hideButtonController),
-      ExploreScreen(newsList: newsList, _hideButtonController),
+      HomeScreen(_hideButtonController),
+      ExploreScreen(_hideButtonController),
       const BookmarkScreen(),
       const ProfileScreen()
     ];

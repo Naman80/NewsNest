@@ -1,35 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:newsnest/Models/news.model.dart';
+import 'package:newsnest/Utils/connectioncheck.dart';
+import 'package:newsnest/Utils/providers/newslist_provider.dart';
 import 'package:newsnest/Utils/tap_functions.dart';
 import 'package:newsnest/Widgets/category_bar.dart';
 import 'package:newsnest/Widgets/custom_appbar.dart';
 import 'package:newsnest/Widgets/news_tile.dart';
 import 'package:newsnest/backend/api/newsapi.dart';
+import 'package:provider/provider.dart';
 
 class ExploreScreen extends StatefulWidget {
-  List<NewsModel> newsList;
   final ScrollController scrollController;
-  ExploreScreen(this.scrollController, {super.key, required this.newsList});
+  List<NewsModel> allNewsList = [];
+  ExploreScreen(
+    this.scrollController, {
+    super.key,
+  });
 
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
-  // List<NewsModel> allNewsList = [];
   @override
   void initState() {
-    // print("explore init state is called");
+    print("explore init state is called");
     super.initState();
-    // fetchNews();
+    if (widget.allNewsList.isEmpty) {
+      widget.allNewsList = context.read<NewsListProvider>().newsList;
+    }
   }
 
   void fetchNews(String category) async {
     print("explore fetch news is called");
-    final newsList = await NewsApi.fetchTopHeadlines(category: category);
-    setState(() {
-      widget.newsList = newsList;
-    });
+    bool hasNetwork = await ConnectionCheck.hasNetwork();
+    if (hasNetwork) {
+      final newsList = await NewsApi.fetchTopHeadlines(category: category);
+      setState(() {
+        widget.allNewsList = newsList;
+      });
+    }
   }
 
   List<String> categoryList = [
@@ -51,22 +61,25 @@ class _ExploreScreenState extends State<ExploreScreen> {
           showtrailingIcon: true,
         ),
         CategoryBar(categoryList: categoryList, fetchCategoryNews: fetchNews),
-        widget.newsList.isNotEmpty
+        widget.allNewsList.isNotEmpty
             ? Expanded(
                 child: ListView.builder(
                   shrinkWrap: true,
                   controller: widget.scrollController,
                   scrollDirection: Axis.vertical,
-                  itemCount: widget.newsList.length,
+                  itemCount: widget.allNewsList.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
                         onTap: () => TapFunctions.onNewsTileTap(
-                            widget.newsList[index], context),
-                        child: NewsTile(singleNews: widget.newsList[index]));
+                            widget.allNewsList[index], context),
+                        child: NewsTile(singleNews: widget.allNewsList[index]));
                   },
                 ),
               )
-            : const Expanded(child: Center(child: CircularProgressIndicator()))
+            : const Expanded(
+                child: Center(
+                    child:
+                        Text("Please turn on Internet and relaunch the app")))
       ],
     );
   }

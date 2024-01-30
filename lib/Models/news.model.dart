@@ -29,11 +29,25 @@ class NewsModel {
       description: json['description'] ?? '',
       url: json['url'] ?? '',
       urlToImage: json['urlToImage'] ?? '',
-      publishedAt: DateFormat.yMMMd()
-          .format(DateTime.parse(json['publishedAt']))
-          .toString(),
+      // publishedAt: DateFormat.yMMMd()
+      //     .format(DateTime.parse(json['publishedAt']))
+      //     .toString(),
+      publishedAt: json['publishedAt'],
       content: json['content'] ?? '',
     );
+  }
+  // Convert NewsModel object to a map
+  Map<String, dynamic> toJson() {
+    return {
+      'source': source.toJson(),
+      'author': author,
+      'title': title,
+      'description': description,
+      'url': url,
+      'urlToImage': urlToImage,
+      'publishedAt': publishedAt,
+      'content': content,
+    };
   }
 }
 
@@ -52,5 +66,11 @@ class Source {
       id: json['id'],
       name: json['name'],
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+    };
   }
 }

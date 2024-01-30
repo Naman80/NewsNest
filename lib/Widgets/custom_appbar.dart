@@ -61,7 +61,9 @@ class CustomSearchDelegate extends SearchDelegate {
   List<NewsModel> newsList = [];
 
   Future<List<NewsModel>> fetchNews(String query) async {
-    if (query == "") return Future(() => throw Exception());
+    if (query == "") {
+      return Future(() => throw Exception("Search field is empty"));
+    }
     final result = await NewsApi.fetchEverythingNews(query: query);
     newsList = result;
     return result;
