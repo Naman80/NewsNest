@@ -34,12 +34,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   void initState() {
     widget.hasConnection = context.read<NewsListProvider>().hasNetwork;
-    fetchNews(categoryList[0]);
+    if (widget.allNewsList.isEmpty) fetchNews(categoryList[0]);
     super.initState();
   }
 
   void fetchNews(String category) async {
-    // setState(() {});
     if (widget.hasConnection) {
       final newsList = await NewsApi.fetchTopHeadlines(category: category);
       setState(() {
