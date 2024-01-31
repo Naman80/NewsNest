@@ -4,7 +4,7 @@
 
 Welcome to NewsNest, the ultimate news app built with Flutter that offers a personalized and immersive news-reading experience. Stay informed, discover trending topics, and customize your news feed to match your interests, all in one intuitive app.
 
-<img src='screenshots/image1.jpg' width='250' height='500'>        <img src='screenshots/image1.jpg' width='250' height='500'>
+<img src='screenshots/image1.jpg' width='250' height='500'>        <img src='screenshots/image2.jpg' width='250' height='500'>
 
 ## Features
 
