@@ -8,9 +8,17 @@ class NewsListProvider extends ChangeNotifier {
   List<NewsModel> _newsList = [];
   bool hasNetwork = false;
   List<NewsModel> get newsList => _newsList;
-  // NewsListProvider() {
-  //   init();
-  // }
+
+  void toggleBookmark(NewsModel singleNews, bool val) {
+    final modifiedList = _newsList.map((e) {
+      if (e.title == singleNews.title) {
+        e.isBookmarked = val;
+      }
+      return e;
+    }).toList();
+    set(modifiedList);
+  }
+
   void set(List<NewsModel> val) {
     _newsList = val;
     LocalStorageNewsList.writeData(val);
@@ -21,7 +29,6 @@ class NewsListProvider extends ChangeNotifier {
     _newsList = await LocalStorageNewsList.readData();
     hasNetwork = await ConnectionCheck.hasNetwork();
     notifyListeners();
-
     if (hasNetwork) {
       fetchNews();
     }
@@ -29,9 +36,7 @@ class NewsListProvider extends ChangeNotifier {
   }
 
   void fetchNews() async {
-    print("home fetch news is called");
     final newsList = await NewsApi.fetchTopHeadlines();
-    // print(newsList);
     set(newsList);
   }
 }

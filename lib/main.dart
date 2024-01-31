@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:newsnest/Utils/providers/bookmarks_provider.dart';
 import 'package:newsnest/Utils/providers/newslist_provider.dart';
 import 'package:newsnest/constants/colors.dart';
 import 'package:newsnest/screens/bookmark_screen.dart';
@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => NewsListProvider()),
+    ChangeNotifierProvider(create: (_) => BookmarkListProvider())
   ], child: const MyApp()));
 }
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'NewsNest',
       theme: ThemeData(
         brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSeed(
@@ -45,41 +46,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  late ScrollController _hideButtonController;
-  bool _isVisible = true;
-  List<Widget> screens = [];
+  List<Widget> screens = [
+    const HomeScreen(),
+    ExploreScreen(),
+    const BookmarkScreen(),
+    const ProfileScreen()
+  ];
 
   @override
   void initState() {
-    print("home init state is called");
+    context.read<BookmarkListProvider>().init();
     context.read<NewsListProvider>().init();
-    _isVisible = true;
-    _hideButtonController = ScrollController();
-    _hideButtonController.addListener(() {
-      if (_hideButtonController.position.userScrollDirection ==
-          ScrollDirection.reverse) {
-        if (_isVisible) {
-          setState(() {
-            _isVisible = true;
-          });
-        }
-      }
-      if (_hideButtonController.position.userScrollDirection ==
-          ScrollDirection.forward) {
-        if (!_isVisible) {
-          setState(() {
-            _isVisible = true;
-          });
-        }
-      }
-    });
     super.initState();
-    screens = [
-      HomeScreen(_hideButtonController),
-      ExploreScreen(_hideButtonController),
-      const BookmarkScreen(),
-      const ProfileScreen()
-    ];
   }
 
   @override
@@ -89,71 +67,68 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: BgColorPicker.primary,
           body: Center(child: screens[_selectedIndex]),
           bottomNavigationBar: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            height: _isVisible ? 80.0 : 0.0,
-            child: _isVisible
-                ? Container(
-                    height: 80,
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
-                        color: BgColorPicker.secondary.withOpacity(0.9),
-                        border: Border(
-                            top: BorderSide(
-                          width: 1,
-                          color: Colors.grey.withAlpha(10),
-                        ))),
-                    padding: const EdgeInsets.all(16),
-                    child: GNav(
-                      tabBorderRadius: 17,
-                      // backgroundColor: Colors.red,
-                      textStyle: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: BgColorPicker.secondary,
-                          fontSize: 16),
-                      gap: 3,
-                      haptic: true,
-                      duration: const Duration(milliseconds: 500),
-                      color: IconColorPicker.primary,
-                      activeColor: IconColorPicker.secondary,
-                      tabBackgroundColor: BgColorPicker.selectedNav,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 13, horizontal: 19),
-                      iconSize: 24,
-                      tabMargin: const EdgeInsets.all(0),
-                      tabs: [
-                        GButton(
-                          icon: _selectedIndex == 0
-                              ? Icons.home
-                              : Icons.home_outlined,
-                          text: "Home",
-                        ),
-                        GButton(
-                          icon: _selectedIndex == 1
-                              ? Icons.explore
-                              : Icons.explore_outlined,
-                          text: "Explore",
-                        ),
-                        GButton(
-                          icon: _selectedIndex == 2
-                              ? Icons.bookmark_add_rounded
-                              : Icons.bookmark_add_outlined,
-                          text: "Bookmarks",
-                        ),
-                        GButton(
-                          icon: _selectedIndex == 3
-                              ? Icons.person_2
-                              : Icons.person_2_outlined,
-                          text: "Profile",
-                        )
-                      ],
-                      selectedIndex: _selectedIndex,
-                      onTabChange: (value) =>
-                          {setState(() => _selectedIndex = value)},
-                    ))
-                : Container(),
-          )),
+              duration: const Duration(milliseconds: 300),
+              height: 80.0,
+              child: Container(
+                  height: 80,
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                      color: BgColorPicker.secondary.withOpacity(0.9),
+                      border: Border(
+                          top: BorderSide(
+                        width: 1,
+                        color: Colors.grey.withAlpha(10),
+                      ))),
+                  padding: const EdgeInsets.all(16),
+                  child: GNav(
+                    tabBorderRadius: 17,
+                    // backgroundColor: Colors.red,
+                    textStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: BgColorPicker.secondary,
+                        fontSize: 16),
+                    gap: 3,
+                    haptic: true,
+                    duration: const Duration(milliseconds: 500),
+                    color: IconColorPicker.primary,
+                    activeColor: IconColorPicker.secondary,
+                    tabBackgroundColor: BgColorPicker.selectedNav,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 13, horizontal: 19),
+                    iconSize: 24,
+                    tabMargin: const EdgeInsets.all(0),
+                    tabs: [
+                      GButton(
+                        icon: _selectedIndex == 0
+                            ? Icons.home
+                            : Icons.home_outlined,
+                        text: "Home",
+                      ),
+                      GButton(
+                        icon: _selectedIndex == 1
+                            ? Icons.explore
+                            : Icons.explore_outlined,
+                        text: "Explore",
+                      ),
+                      GButton(
+                        icon: _selectedIndex == 2
+                            ? Icons.bookmark_add_rounded
+                            : Icons.bookmark_add_outlined,
+                        text: "Bookmarks",
+                      ),
+                      GButton(
+                        icon: _selectedIndex == 3
+                            ? Icons.person_2
+                            : Icons.person_2_outlined,
+                        text: "Profile",
+                      )
+                    ],
+                    selectedIndex: _selectedIndex,
+                    onTabChange: (value) =>
+                        {setState(() => _selectedIndex = value)},
+                  )))),
     );
   }
 }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:newsnest/Models/news.model.dart';
+import 'package:newsnest/Utils/listpresentcheck.dart';
+import 'package:newsnest/Utils/providers/bookmarks_provider.dart';
 import 'package:newsnest/Utils/tap_functions.dart';
 import 'package:newsnest/Widgets/news_tile.dart';
 import 'package:newsnest/backend/api/newsapi.dart';
 import 'package:newsnest/constants/colors.dart';
+import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String headingText;
@@ -106,23 +109,32 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    print("serach results build is called");
     return FutureBuilder(
         future: fetchNews(query),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return snapshot.hasData
                 ? snapshot.data!.isNotEmpty
-                    ? ListView.builder(
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () => TapFunctions.onNewsTileTap(
-                                snapshot.data![index], context),
-                            child: NewsTile(singleNews: snapshot.data![index]),
-                          );
-                        },
-                        itemCount: snapshot.data!.length,
-                      )
+                    ? Consumer<BookmarkListProvider>(
+                        builder: (context, value, child) {
+                        return ListView.builder(
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () => TapFunctions.onNewsTileTap(
+                                  singleNews: snapshot.data![index],
+                                  context: context,
+                                  newsIndex: index,
+                                  isBookmarked:
+                                      ListPresentCheck.listPresentCheck(
+                                          list: value.bookmarkList,
+                                          news: snapshot.data![index])),
+                              child:
+                                  NewsTile(singleNews: snapshot.data![index]),
+                            );
+                          },
+                          itemCount: snapshot.data!.length,
+                        );
+                      })
                     : const Center(child: Text("No results found"))
                 : const Center(child: Text("Search field is empty"));
           } else {
@@ -135,18 +147,23 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    print("serach suggestions build is called");
-
-    return ListView.separated(
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () => TapFunctions.onNewsTileTap(newsList[index], context),
-            child: NewsTile(singleNews: newsList[index]),
-          );
-        },
-        separatorBuilder: (context, index) => const SizedBox(
-              height: 5,
-            ),
-        itemCount: newsList.length);
+    return Consumer<BookmarkListProvider>(builder: (context, value, child) {
+      return ListView.separated(
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () => TapFunctions.onNewsTileTap(
+                  singleNews: newsList[index],
+                  context: context,
+                  newsIndex: index,
+                  isBookmarked: ListPresentCheck.listPresentCheck(
+                      list: value.bookmarkList, news: newsList[index])),
+              child: NewsTile(singleNews: newsList[index]),
+            );
+          },
+          separatorBuilder: (context, index) => const SizedBox(
+                height: 5,
+              ),
+          itemCount: newsList.length);
+    });
   }
 }

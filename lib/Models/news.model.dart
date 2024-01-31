@@ -9,6 +9,7 @@ class NewsModel {
   String urlToImage;
   String publishedAt;
   String content;
+  bool isBookmarked;
   NewsModel({
     required this.source,
     required this.author,
@@ -18,6 +19,7 @@ class NewsModel {
     required this.urlToImage,
     required this.publishedAt,
     required this.content,
+    required this.isBookmarked,
   });
 
   // Factory constructor for creating NewsModel from a Map
@@ -29,11 +31,11 @@ class NewsModel {
       description: json['description'] ?? '',
       url: json['url'] ?? '',
       urlToImage: json['urlToImage'] ?? '',
-      // publishedAt: DateFormat.yMMMd()
-      //     .format(DateTime.parse(json['publishedAt']))
-      //     .toString(),
-      publishedAt: json['publishedAt'],
+      publishedAt: DateFormat.yMMMd()
+          .format(DateTime.parse(json['publishedAt']))
+          .toString(),
       content: json['content'] ?? '',
+      isBookmarked: json['isBookmarked'] ?? false,
     );
   }
   // Convert NewsModel object to a map
@@ -45,8 +47,9 @@ class NewsModel {
       'description': description,
       'url': url,
       'urlToImage': urlToImage,
-      'publishedAt': publishedAt,
+      'publishedAt': DateFormat.yMMMd().parse(publishedAt).toString(),
       'content': content,
+      'isBookmarked': isBookmarked
     };
   }
 }

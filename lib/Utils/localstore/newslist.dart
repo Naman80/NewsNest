@@ -7,13 +7,10 @@ class LocalStorageNewsList {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String newsList = prefs.getString('newsList') ?? "";
     final result = newsList != "" ? jsonDecode(newsList) as List<dynamic> : [];
-    print("$newsList this is read from store");
     final transformedList = result.map((e) {
       return NewsModel.fromJson(e);
     }).toList();
-    print("$transformedList this is read from store");
     return transformedList;
-    // return jsonDecode(newsList) as List<NewsModel>;
   }
 
   static void writeData(List<NewsModel> newsList) async {
