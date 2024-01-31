@@ -59,7 +59,7 @@ Save your favorite articles for later with the bookmark feature. Enjoy the flexi
   - **widgets/**: Reusable widgets used across different screens.
   - **models/**: Data models used in the app.
   - **providers/**: Implements state management providers.
-  - **services/**: Backend services and API integrations.
+  - **backend/**: Backend services and API integrations.
   - **utils/**: Utility functions and helper classes.
   - **main.dart**: The entry point of the application.
 
@@ -67,7 +67,7 @@ Save your favorite articles for later with the bookmark feature. Enjoy the flexi
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YourUsername/NewsNest.git
+   git clone https://github.com/Naman80/NewsNest.git
 
 2. **Navigate to the project directory**
    ```bash
