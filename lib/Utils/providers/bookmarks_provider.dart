@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:newsnest/Models/news.model.dart';
 import 'package:newsnest/Utils/localstore/bookmarks.dart';
-import 'package:provider/provider.dart';
 
 class BookmarkListProvider extends ChangeNotifier {
   List<NewsModel> bookmarkList = [];

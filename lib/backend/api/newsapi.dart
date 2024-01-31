@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:newsnest/Models/news.model.dart';
 
-String apiKey = "7f2fde8120d949e593762165e25e4300";
-String apiKey2 = "3a48b8b11bd24c5fa56c16ed52303b91";
+String apiKey2 = "7f2fde8120d949e593762165e25e4300";
+String apiKey = "3a48b8b11bd24c5fa56c16ed52303b91";
 
 class NewsApi {
   static Future<List<NewsModel>> fetchTopHeadlines(

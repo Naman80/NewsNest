@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
     const HomeScreen(),
     ExploreScreen(),
     const BookmarkScreen(),
-    const ProfileScreen()
+    // const ProfileScreen()
   ];
 
   @override
@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                     activeColor: IconColorPicker.secondary,
                     tabBackgroundColor: BgColorPicker.selectedNav,
                     padding: const EdgeInsets.symmetric(
-                        vertical: 13, horizontal: 19),
+                        vertical: 10, horizontal: 25),
                     iconSize: 24,
                     tabMargin: const EdgeInsets.all(0),
                     tabs: [
@@ -118,12 +118,12 @@ class _HomePageState extends State<HomePage> {
                             : Icons.bookmark_add_outlined,
                         text: "Bookmarks",
                       ),
-                      GButton(
-                        icon: _selectedIndex == 3
-                            ? Icons.person_2
-                            : Icons.person_2_outlined,
-                        text: "Profile",
-                      )
+                      // GButton(
+                      //   icon: _selectedIndex == 3
+                      //       ? Icons.person_2
+                      //       : Icons.person_2_outlined,
+                      //   text: "Profile",
+                      // )
                     ],
                     selectedIndex: _selectedIndex,
                     onTabChange: (value) =>

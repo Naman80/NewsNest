@@ -3,6 +3,7 @@ import 'package:newsnest/Models/news.model.dart';
 import 'package:newsnest/Utils/connectioncheck.dart';
 import 'package:newsnest/Utils/listpresentcheck.dart';
 import 'package:newsnest/Utils/providers/bookmarks_provider.dart';
+import 'package:newsnest/Utils/providers/newslist_provider.dart';
 import 'package:newsnest/Utils/tap_functions.dart';
 import 'package:newsnest/Widgets/category_bar.dart';
 import 'package:newsnest/Widgets/custom_appbar.dart';
@@ -32,12 +33,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
   ];
   @override
   void initState() {
+    widget.hasConnection = context.read<NewsListProvider>().hasNetwork;
     fetchNews(categoryList[0]);
     super.initState();
   }
 
   void fetchNews(String category) async {
-    widget.hasConnection = await ConnectionCheck.hasNetwork();
+    // setState(() {});
     if (widget.hasConnection) {
       final newsList = await NewsApi.fetchTopHeadlines(category: category);
       setState(() {
